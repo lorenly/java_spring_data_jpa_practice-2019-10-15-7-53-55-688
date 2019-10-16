@@ -1,8 +1,12 @@
 package com.tw.apistackbase.core;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
+@JsonIgnoreProperties({ "id"})
 public class Company {
     @GeneratedValue
     @Id
@@ -12,6 +16,9 @@ public class Company {
 
     @OneToOne(cascade = CascadeType.ALL)
     private CompanyProfile profile;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Employee> employees;
 
     public Long getId() {
         return id;
@@ -42,5 +49,13 @@ public class Company {
 
     public void setProfile(CompanyProfile profile) {
         this.profile = profile;
+    }
+
+    public List<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(List<Employee> employees) {
+        this.employees = employees;
     }
 }

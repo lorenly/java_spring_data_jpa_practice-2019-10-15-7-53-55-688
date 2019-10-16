@@ -1,10 +1,13 @@
 package com.tw.apistackbase.core;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
+@JsonIgnoreProperties({ "id"})
 public class CompanyProfile {
     @GeneratedValue
     @Id
