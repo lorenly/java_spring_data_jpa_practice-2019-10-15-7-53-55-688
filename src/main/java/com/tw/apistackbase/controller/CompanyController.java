@@ -3,7 +3,13 @@ package com.tw.apistackbase.controller;
 import com.tw.apistackbase.core.Company;
 import com.tw.apistackbase.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
+
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("/companies")
@@ -20,21 +26,30 @@ public class CompanyController {
         return companyRepository.findOneByName(name);
     }
 
+    @ResponseStatus(code = CREATED)
     @PostMapping(produces = {"application/json"})
     public Company add(@RequestBody Company company) {
         return companyRepository.save(company);
     }
 
     @DeleteMapping(value = "/{name}", produces = {"application/json"})
-    public String deleteCompanyByName(@PathVariable String name){
-        Company tempCompany = companyRepository.findOneByName(name);
-        companyRepository.delete(tempCompany);
-        return "Resource delete with name "+name;
+    public ResponseEntity deleteCompanyByName(@PathVariable String name){
+        Optional<Company> companyOptional = Optional.ofNullable(companyRepository.findOneByName(name));
+        if (companyOptional.isPresent()) {
+            companyRepository.delete(companyOptional.get());
+            return new ResponseEntity<>(OK);
+        } else {
+            return new ResponseEntity<>(NOT_FOUND);
+        }
     }
-    @PutMapping(value = "/{name}",produces = {"application/json"})
-    public Company update(@PathVariable("name") String name, @RequestBody Company company) {
-        Company tempCompany = companyRepository.findOneByName(name);
-        companyRepository.delete(tempCompany);
-        return companyRepository.save(company);
+    @PatchMapping(value = "/{name}",produces = {"application/json"})
+    public ResponseEntity update(@PathVariable("name") String name, @RequestBody Company company) {
+        Optional<Company> fetchCompany = Optional.ofNullable(companyRepository.findOneByName(name));
+        if (fetchCompany.isPresent()) {
+            fetchCompany.get().setName(company.getName());
+            Company newCompany = companyRepository.save(company);
+            return new ResponseEntity<>(newCompany, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }
