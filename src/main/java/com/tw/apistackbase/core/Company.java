@@ -1,6 +1,13 @@
 package com.tw.apistackbase.core;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class Company {
+    @GeneratedValue
+    @Id
     private Long id;
 
     private String name;
