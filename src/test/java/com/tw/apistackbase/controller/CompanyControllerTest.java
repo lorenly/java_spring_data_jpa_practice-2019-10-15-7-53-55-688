@@ -33,10 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(CompanyController.class)
 @ActiveProfiles(profiles = "test")
 class CompanyControllerTest {
-    @Autowired
-    private CompanyController companyController;
-    @MockBean
-    private CompanyRepository companyRepository;
     @MockBean
     private CompanyService companyService;
     @Autowired
@@ -45,39 +41,21 @@ class CompanyControllerTest {
     private ObjectMapper objectMapper;
 
     // getCompanyByNameLike
-//    @Test
-//    void should_return_company_with_name_Summit_when_Sum_entered_to_getCompanyByNameLike() throws Exception {
-//        //given
-//        List<Company> companies = new ArrayList<>();
-//        List<Employee> employees = new ArrayList<>();
-//
-//        Company company = new Company();
-//        CompanyProfile companyProfile = new CompanyProfile();
-//        companyProfile.setRegisteredCapital(9);
-//        companyProfile.setCertId("CertId#Test");
-//
-//        Employee employee = new Employee();
-//        employee.setName("Employee Name");
-//        employee.setAge(25);
-//        employees.add(employee);
-//
-//        company.setName("S");
-//        company.setProfile(companyProfile);
-//        company.setEmployees(employees);
-//
-//        companies.add(company);
-//        when(companyService.findByNameContaining("S")).thenReturn(company);
-//        //when
-////        ResultActions result = mvc.perform(get("/companies?name=").param("name",company.getName()));
-//        ResultActions result = mvc.perform(get("/companies?name=S"));
-//        //then
-//        result.andExpect(status().isOk())
-//                .andDo(print())
-//                .andExpect(jsonPath("$.name", contains("Summit")))
-//        ;
-//    }
+    @Test
+    void should_return_company_with_name_Summit_when_Sum_entered_to_getCompanyByNameLike() throws Exception {
+        //given
+        Company company = new Company("Summit");
+        when(companyService.findByNameContaining("S")).thenReturn(company);
+        //when
+        ResultActions result = mvc.perform(get("/companies?name=S"));
+        //then
+        result.andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.name").value("Summit"))
+        ;
+    }
 
-    // /companies/all?size=0&pageSize=5 findAll
+//     /companies/all?size=0&pageSize=5 findAll
 //    @Test
 //    void should_return_one_item_when_Sum_entered_to_getCompanyByNameLike() throws Exception {
 //        //given
@@ -99,23 +77,34 @@ class CompanyControllerTest {
     @Test
     public void should_return_200_when_company_is_deleted() throws Exception {
         Company company = new Company("CompanyOne");
-        companyService.save(company);
         when(companyService.findByNameContaining("CompanyOne")).thenReturn(company);
         ResultActions result = mvc.perform(delete("/companies/CompanyOne"));
-        result.andExpect(status().isOk());
+        result.andExpect(status().isOk())
+        ;
     }
 
     @Test
     void should_return_updated_company() throws Exception {
         Company company = new Company("CompanyOne");
-        companyService.save(company);
         companyService.updateCompanyInfo("CompanyTwo", company);
 
         when(companyService.findByNameContaining("CompanyTwo")).thenReturn(company);
 
         ResultActions result = mvc.perform(patch("/companies/CompanyTwo").contentType("application/json").content(objectMapper.writeValueAsString(company)));
-        result.andExpect(status().isOk());
+        result.andExpect(status().isOk())
+        ;
+    }
 
-
+    @Test
+    void should_return_company_information_when_company_added() throws Exception {
+        //given
+        Company company = new Company("CompanyOne");
+        when(companyService.findByNameContaining("CompanyOne")).thenReturn(company);
+        //when
+        ResultActions result = mvc.perform(post("/companies").contentType("application/json").content(objectMapper.writeValueAsString(company)));
+        //then
+        result.andExpect(status().isCreated())
+                .andDo(print())
+        ;
     }
 }
