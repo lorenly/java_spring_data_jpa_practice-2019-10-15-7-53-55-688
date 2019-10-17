@@ -2,9 +2,6 @@ package com.tw.apistackbase.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tw.apistackbase.core.Company;
-import com.tw.apistackbase.core.CompanyProfile;
-import com.tw.apistackbase.core.Employee;
-import com.tw.apistackbase.repository.CompanyRepository;
 import com.tw.apistackbase.service.CompanyService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,13 +13,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -40,7 +30,6 @@ class CompanyControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // getCompanyByNameLike
     @Test
     void should_return_company_with_name_Summit_when_Sum_entered_to_getCompanyByNameLike() throws Exception {
         //given
@@ -55,22 +44,17 @@ class CompanyControllerTest {
         ;
     }
 
-//     /companies/all?size=0&pageSize=5 findAll
 //    @Test
-//    void should_return_one_item_when_Sum_entered_to_getCompanyByNameLike() throws Exception {
+//    void should_return_one_page_with_2_pageSize_when_given_0_page_2_pageSize() throws Exception {
 //        //given
-//        List<Company> companies = new ArrayList<>();
-//        Company company = new Company();
-//        company.setName("Summit");
-//        company.setId(1);
-//        companies.add(company);
-//        when(companyRepository.findByNameContaining("Sum")).thenReturn(company);
+//        Company company = new Company("Summit");
+//        when(companyService.findByNameContaining("S")).thenReturn(company);
 //        //when
-//        ResultActions result = mvc.perform(get("/companies").param("name",company.getName()));
+//        ResultActions result = mvc.perform(get("companies/all?page=0&pageSize=2"));
 //        //then
 //        result.andExpect(status().isOk())
 //                .andDo(print())
-//                .andExpect(jsonPath("$", hasSize(1)))
+//                .andExpect(jsonPath("$").value("Summit"))
 //        ;
 //    }
 
