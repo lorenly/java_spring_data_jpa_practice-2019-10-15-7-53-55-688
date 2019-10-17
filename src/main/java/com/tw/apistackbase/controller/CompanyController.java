@@ -25,10 +25,6 @@ public class CompanyController {
         return companyService.getAll(page,pageSize);
     }
 
-//    @GetMapping(value = "/{name}", produces = {"application/json"})
-//    public Company getCompanyByName(@PathVariable String name){
-//        return companyRepository.findOneByName(name);
-//    }
     @GetMapping(produces = {"application/json"})
     public Company getCompanyByNameLike(@RequestParam String name){
         return companyService.findByNameContaining(name);
