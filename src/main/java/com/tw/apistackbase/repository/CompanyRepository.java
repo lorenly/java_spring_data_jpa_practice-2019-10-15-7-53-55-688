@@ -8,4 +8,6 @@ import org.springframework.data.repository.query.Param;
 public interface CompanyRepository extends JpaRepository<Company, Long> {
     @Query("Select c from Company c where c.name = :name")
     Company findOneByName(@Param("name") String name);
+
+    Company findByNameContaining(String name);
 }

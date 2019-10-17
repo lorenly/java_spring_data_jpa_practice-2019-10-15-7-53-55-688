@@ -3,6 +3,8 @@ package com.tw.apistackbase.controller;
 import com.tw.apistackbase.core.Company;
 import com.tw.apistackbase.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,14 +18,18 @@ import static org.springframework.http.HttpStatus.*;
 public class CompanyController {
     @Autowired
     CompanyRepository companyRepository;
-    @GetMapping(produces = {"application/json"})
-    public Iterable<Company> list() {
-        return companyRepository.findAll();
+    @GetMapping(value = "/all" ,produces = {"application/json"})
+    public Iterable<Company> list(@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer pageSize) {
+        return companyRepository.findAll(PageRequest.of(page,pageSize, Sort.by("name").ascending()));
     }
 
-    @GetMapping(value = "/{name}", produces = {"application/json"})
-    public Company getCompanyByName(@PathVariable String name){
-        return companyRepository.findOneByName(name);
+//    @GetMapping(value = "/{name}", produces = {"application/json"})
+//    public Company getCompanyByName(@PathVariable String name){
+//        return companyRepository.findOneByName(name);
+//    }
+    @GetMapping(produces = {"application/json"})
+    public Company getCompanyByNameLike(@RequestParam String name){
+        return companyRepository.findByNameContaining(name);
     }
 
     @ResponseStatus(code = CREATED)
