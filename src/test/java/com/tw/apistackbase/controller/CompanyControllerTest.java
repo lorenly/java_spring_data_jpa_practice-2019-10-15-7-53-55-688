@@ -2,7 +2,10 @@ package com.tw.apistackbase.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tw.apistackbase.core.Company;
+import com.tw.apistackbase.core.CompanyProfile;
+import com.tw.apistackbase.core.Employee;
 import com.tw.apistackbase.repository.CompanyRepository;
+import com.tw.apistackbase.service.CompanyService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +19,12 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,6 +37,8 @@ class CompanyControllerTest {
     private CompanyController companyController;
     @MockBean
     private CompanyRepository companyRepository;
+    @MockBean
+    private CompanyService companyService;
     @Autowired
     private MockMvc mvc;
     @Autowired
@@ -42,17 +49,31 @@ class CompanyControllerTest {
 //    void should_return_company_with_name_Summit_when_Sum_entered_to_getCompanyByNameLike() throws Exception {
 //        //given
 //        List<Company> companies = new ArrayList<>();
+//        List<Employee> employees = new ArrayList<>();
+//
 //        Company company = new Company();
-//        company.setName("Summit");
-//        company.setId(1);
+//        CompanyProfile companyProfile = new CompanyProfile();
+//        companyProfile.setRegisteredCapital(9);
+//        companyProfile.setCertId("CertId#Test");
+//
+//        Employee employee = new Employee();
+//        employee.setName("Employee Name");
+//        employee.setAge(25);
+//        employees.add(employee);
+//
+//        company.setName("S");
+//        company.setProfile(companyProfile);
+//        company.setEmployees(employees);
+//
 //        companies.add(company);
-//        when(companyRepository.findByNameContaining("Sum")).thenReturn(company);
+//        when(companyService.findByNameContaining("S")).thenReturn(company);
 //        //when
-//        ResultActions result = mvc.perform(get("/companies").param("name",company.getName()));
+////        ResultActions result = mvc.perform(get("/companies?name=").param("name",company.getName()));
+//        ResultActions result = mvc.perform(get("/companies?name=S"));
 //        //then
 //        result.andExpect(status().isOk())
 //                .andDo(print())
-//                .andExpect(jsonPath("$", hasSize(1)))
+//                .andExpect(jsonPath("$.name", contains("Summit")))
 //        ;
 //    }
 
@@ -74,4 +95,27 @@ class CompanyControllerTest {
 //                .andExpect(jsonPath("$", hasSize(1)))
 //        ;
 //    }
+
+    @Test
+    public void should_return_200_when_company_is_deleted() throws Exception {
+        Company company = new Company("CompanyOne");
+        companyService.save(company);
+        when(companyService.findByNameContaining("CompanyOne")).thenReturn(company);
+        ResultActions result = mvc.perform(delete("/companies/CompanyOne"));
+        result.andExpect(status().isOk());
+    }
+
+    @Test
+    void should_return_updated_company() throws Exception {
+        Company company = new Company("CompanyOne");
+        companyService.save(company);
+        companyService.updateCompanyInfo("CompanyTwo", company);
+
+        when(companyService.findByNameContaining("CompanyTwo")).thenReturn(company);
+
+        ResultActions result = mvc.perform(patch("/companies/CompanyTwo").contentType("application/json").content(objectMapper.writeValueAsString(company)));
+        result.andExpect(status().isOk());
+
+
+    }
 }
