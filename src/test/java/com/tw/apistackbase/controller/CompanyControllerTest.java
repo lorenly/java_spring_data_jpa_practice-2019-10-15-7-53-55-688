@@ -59,12 +59,19 @@ class CompanyControllerTest {
 //    }
 
     @Test
-    public void should_return_200_when_company_is_deleted() throws Exception {
+    public void should_return_200_ok_when_company_is_deleted() throws Exception {
         Company company = new Company("CompanyOne");
         when(companyService.findByNameContaining("CompanyOne")).thenReturn(company);
         ResultActions result = mvc.perform(delete("/companies/CompanyOne"));
         result.andExpect(status().isOk())
         ;
+    }
+
+    @Test
+    public void should_return_404_not_found_when_delete_company_not_found() throws Exception {
+        when(companyService.findByNameContaining("CompanyOne")).thenReturn(null);
+        ResultActions resultActions = mvc.perform(delete("/companies/CompanyOne"));
+        resultActions.andExpect(status().isNotFound());
     }
 
     @Test

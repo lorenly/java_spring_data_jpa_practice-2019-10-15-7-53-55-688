@@ -38,7 +38,7 @@ public class CompanyService {
             companyRepository.delete(companyOptional.get());
             return new ResponseEntity<>(OK);
         } else {
-            return new ResponseEntity<>(NOT_FOUND);
+            return null;
         }
     }
 
@@ -52,6 +52,6 @@ public class CompanyService {
             Company newCompany = companyRepository.save(fetchCompany.get());
             return new ResponseEntity<>(newCompany, HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return null;
     }
 }
