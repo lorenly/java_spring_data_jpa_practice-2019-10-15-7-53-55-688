@@ -75,15 +75,26 @@ class CompanyControllerTest {
     }
 
     @Test
-    void should_return_updated_company() throws Exception {
+    void should_return_200_ok_when_updated_company() throws Exception {
         Company company = new Company("CompanyOne");
         companyService.updateCompanyInfo("CompanyTwo", company);
 
         when(companyService.findByNameContaining("CompanyTwo")).thenReturn(company);
 
         ResultActions result = mvc.perform(patch("/companies/CompanyTwo").contentType("application/json").content(objectMapper.writeValueAsString(company)));
+
         result.andExpect(status().isOk())
         ;
+    }
+
+    @Test
+    void should_return_404_not_found_when_updated_comapny_not_exist() throws Exception {
+        Company company = new Company("CompanyOne");
+        when(companyService.findByNameContaining("CompanyOne")).thenReturn(null);
+
+        ResultActions resultActions = mvc.perform(patch("/companies/CompanyOne").contentType("application/json").content(objectMapper.writeValueAsString(company)));
+
+        resultActions.andExpect(status().isNotFound());
     }
 
     @Test
