@@ -40,12 +40,12 @@ public class CompanyController {
             return companyService.deleteCompanyByName(name);
         throw new NotFoundException(NOT_FOUND);
     }
+    @ResponseStatus(OK)
     @PatchMapping(value = "/{name}",produces = {"application/json"})
     public ResponseEntity updateCompanyInfo(@PathVariable("name") String name, @RequestBody Company company) throws Exception{
-        ResponseEntity updateCompany = companyService.updateCompanyInfo(name, company);
         Company findCompany = companyService.findByNameContaining(name);
         if(findCompany != null)
-            return updateCompany;
+            return companyService.updateCompanyInfo(name, company);
         throw new NotFoundException(NOT_FOUND);
     }
 }
