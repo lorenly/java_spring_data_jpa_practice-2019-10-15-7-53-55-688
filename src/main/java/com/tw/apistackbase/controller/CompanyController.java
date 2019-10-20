@@ -1,17 +1,11 @@
 package com.tw.apistackbase.controller;
 
 import com.tw.apistackbase.core.Company;
-import com.tw.apistackbase.repository.CompanyRepository;
 import com.tw.apistackbase.service.CompanyService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -24,7 +18,7 @@ public class CompanyController {
 
     @GetMapping(value = "/all" ,produces = {"application/json"})
     public Iterable<Company> listAllCompany(@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer pageSize) {
-        return companyService.getAll(page,pageSize);
+        return companyService.findAll(page,pageSize);
     }
 
     @GetMapping(produces = {"application/json"})

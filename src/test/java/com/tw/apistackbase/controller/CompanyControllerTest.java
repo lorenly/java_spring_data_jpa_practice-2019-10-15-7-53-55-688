@@ -13,6 +13,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -44,19 +50,17 @@ class CompanyControllerTest {
         ;
     }
 
-//    @Test
-//    void should_return_one_page_with_2_pageSize_when_given_0_page_2_pageSize() throws Exception {
-//        //given
-//        Company company = new Company("Summit");
-//        when(companyService.findByNameContaining("S")).thenReturn(company);
-//        //when
-//        ResultActions result = mvc.perform(get("companies/all?page=0&pageSize=2"));
-//        //then
-//        result.andExpect(status().isOk())
-//                .andDo(print())
-//                .andExpect(jsonPath("$").value("Summit"))
-//        ;
-//    }
+    @Test
+    void should_return_one_page_with_2_pageSize_when_given_0_page_2_pageSize() throws Exception {
+        //given
+        when(companyService.findAll(1, 5)).thenReturn(Collections.singleton(new Company("Summit")));
+        //when
+        ResultActions result = mvc.perform(get("/companies/all"));
+        //then
+        result.andExpect(status().isOk())
+                .andDo(print());
+        ;
+    }
 
     @Test
     public void should_return_200_ok_when_company_is_deleted() throws Exception {

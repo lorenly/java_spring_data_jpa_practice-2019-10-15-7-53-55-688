@@ -20,7 +20,7 @@ public class CompanyService {
     @Autowired
     CompanyRepository companyRepository;
 
-    public Iterable<Company> getAll(Integer page, Integer pageSize) {
+    public Iterable<Company> findAll(Integer page, Integer pageSize) {
         return companyRepository.findAll(PageRequest.of(page,pageSize, Sort.by("name").ascending()));
     }
 
